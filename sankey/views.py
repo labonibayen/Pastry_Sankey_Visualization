@@ -13,4 +13,4 @@ from django.core import serializers
 
 def sankeydiagram(request):
 	rows = serializers.serialize("json", DataPoint.objects.filter(in_sankey = True))
-	return render(request, 'sankeyvis/index.html', {'rows':rows})
+	return render(request, 'sankey/index.html', {'rows':rows})

@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from sankey import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('sankey.urls')),
+    path('sankeydiagram/', views.sankeydiagram),
 ]
