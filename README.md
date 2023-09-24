@@ -3,6 +3,8 @@ A Django web app to visualize many to many relationships. A three tier sankey di
 Hovering over the nodes reveal tooltips with descriptions.
 Hovering over a link increases its opacity, helping the individual link stand out amongst the rest of the connections.
 
+Filled with randomly generated data.
+
 See here for live site: http://159.203.68.165/sankeydiagram/
 
 
