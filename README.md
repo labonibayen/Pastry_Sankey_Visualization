@@ -1,9 +1,9 @@
 # django_sankey
-A Django web app to visualize many to many relationships. A three tier sankey diagram built using d3-sankey.
+A Django web app to visualize many to many relationships through a sankey diagram. This is a three tier sankey diagram built using d3-sankey. The interactive diagram is a proof of concept filled with randomly generated junk data.
+
 Hovering over the nodes reveal tooltips with descriptions.
 Hovering over a link increases its opacity, helping the individual link stand out amongst the rest of the connections.
 
-Filled with randomly generated data.
 
 See here for live site: http://159.203.68.165/sankeydiagram/
 
