@@ -8,8 +8,8 @@ Hovering over a link increases its opacity, helping the individual link stand ou
 
 See here for live site: http://159.203.68.165/sankeydiagram/
 
+<img width="979" alt="Screenshot 2023-10-10 at 1 53 25 AM" src="https://github.com/labonibayen/django_sankey/assets/26695981/28ac31b2-ed41-4190-89bf-04a5b454b801">
 
-<img width="967" alt="Screenshot 2023-09-04 at 10 37 45 AM" src="https://github.com/labonibayen/django_sankey/assets/26695981/80c7686b-8cf6-49ce-b052-ce4e86a559f9">
 
 # Notes
 
