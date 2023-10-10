@@ -11,10 +11,11 @@ class DataAdminResource(resources.ModelResource):
 
 class DataAdmin(ImportExportModelAdmin):
     resource_class = DataAdminResource
-    list_display = ('element','category','bool_val', 'element_description')
-    search_fields = ['element','category','bool_val', 'element_description']
+    list_display = ('pastry','base','origin', 'pastry_description','base_description')
+    search_fields = ['pastry','base','origin', 'pastry_description','base_description']
 
 
 admin.site.register(DataPoint, DataAdmin)
 
 # Register your models here.
+
