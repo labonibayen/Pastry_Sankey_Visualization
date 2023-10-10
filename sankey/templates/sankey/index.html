@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sankey Diagram</title>
+  <title>Sankey Diagram of Pastry</title>
 </head>
 <body>
-<h1 style="font-family: monospace;"> Sankey Diagram </h1>
+<h1 style="font-family: palatino;"> Sankey Diagram of Pastry </h1>
+<h3 style="font-family: palatino; font-weight: lighter;"> An interactive diagram of my favorite desserts, the base pastry needed to make them, and their country of origin.</h3>
 <!-- partial:index.partial.html -->
-<svg width="1800" height="2000"></svg>
+<svg width="1000" height="500"></svg>
 
 <style type="text/css">
   .svg-container {
@@ -44,7 +45,7 @@
 <script type="text/javascript">
 
 var svg = d3.select("svg"),
-    margin = {top: 50, right: 300, bottom: 0, left: 50},
+    margin = {top: 100, right: 200, bottom: 0, left: 150},
     width = +svg.attr("width") -margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -57,7 +58,7 @@ d3.select("div#chartId")
    .append("svg")
    //responsive SVG needs these 2 attributes and no width and height attr
    .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 600 400")
+   .attr("viewBox", "0 0 800 400")
    //class to make it responsive
    .classed("svg-content-responsive", true); 
 
@@ -84,7 +85,7 @@ var link = g.append("g")
 
 var node = g.append("g")
     .attr("class", "nodes")
-    .attr("font-family", "monospace")
+    .attr("font-family", "palatino")
     .attr("font-weight", "bold")
     .attr("font-size", 14)
   .selectAll("g");
@@ -98,91 +99,77 @@ var indexLookup = {};
       };
 
   var data = {% autoescape off %}{{ rows }}{% endautoescape %};
-  var elements_list = []
-  var category_list = []
+  var pastries_list = []
+  var base_list = []
+  var origin_list = []
   var node_counter = 0
 
   for (var row in data){
-      if (!elements_list.includes(data[row]["fields"]["element"])){
+      if (!pastries_list.includes(data[row]["fields"]["pastry"])){
         dataNodes["nodes"].push({
-            "name": data[row]["fields"]["element"],
-            "description": data[row]["fields"]["element_description"]
+            "name": data[row]["fields"]["pastry"],
+            "description": data[row]["fields"]["pastry_description"]
           });
         var currentSize = dataNodes["nodes"].length - 1;
-        indexLookup[data[row]["fields"]["element"]] = currentSize;
-        elements_list.push(data[row]["fields"]["element"])
+        indexLookup[data[row]["fields"]["pastry"]] = currentSize;
+        pastries_list.push(data[row]["fields"]["pastry"])
       }  
   };
 
   for (var row in data){
-      if (!category_list.includes(data[row]["fields"]["category"])){
+      if (!base_list.includes(data[row]["fields"]["base"])){
         dataNodes["nodes"].push({
-            "name": data[row]["fields"]["category"],
-            "description":""
+            "name": data[row]["fields"]["base"],
+            "description":data[row]["fields"]["base_description"]
           });
         var currentSize = dataNodes["nodes"].length - 1;
-        indexLookup[data[row]["fields"]["category"]] = currentSize;
-        category_list.push(data[row]["fields"]["category"])
+        indexLookup[data[row]["fields"]["base"]] = currentSize;
+        base_list.push(data[row]["fields"]["base"])
       }  
   };
 
-  dataNodes["nodes"].push({
-    "name": "Good",
-    "description":'This is Good'
-  });
-  
-  var currentSize = dataNodes["nodes"].length - 1;
-  indexLookup["Good"] = currentSize;
+  for (var row in data){
+    if (!origin_list.includes(data[row]["fields"]["origin"])){
+      dataNodes["nodes"].push({
+        "name": data[row]["fields"]["origin"],
+        "description":""
+      });
+      var currentSize = dataNodes["nodes"].length - 1;
+      indexLookup[data[row]["fields"]["origin"]] = currentSize;
+      origin_list.push(data[row]["fields"]["origin"])
+    }
+  };
 
-  dataNodes["nodes"].push({
-    "name": "Bad",
-    "description":'This is Bad'
-  });
 
-  var currentSize = dataNodes["nodes"].length - 1;
-  indexLookup["Bad"] = currentSize;
-  
-  bool_data_list = ["Good", "Bad"]
+counter_dict_level_2 = {}
 
-  for (var elem in elements_list){
-    var t1 = {
-      "source": indexLookup[elements_list[elem]],
-      "target": indexLookup["Good"],
-      "value": 0
-    };
+for (var row in data){
 
-    var t2 = {
-      "source": indexLookup[elements_list[elem]],
-      "target": indexLookup["Bad"],
-      "value": 0
-    };
+    var source = data[row]["fields"]["pastry"]
+    var target = data[row]["fields"]["origin"]
+    var key_name = source.concat("_", target)
 
-    for (var row in data){
-      if (data[row]["fields"]["element"] == elements_list[elem]){
-        
-        if (data[row]["fields"]["bool_val"] == 1){
-          t1["value"] = t1["value"] + 1
-        }
-
-        if (data[row]["fields"]["bool_val"] == 0){
-          t2["value"] = t2["value"] + 1
-        }
-
-      }
-      
+    if (key_name in counter_dict_level_2){
+      counter_dict_level_2[key_name] =  counter_dict_level_2[key_name] + 1
+    } else {
+      counter_dict_level_2[key_name] = 1
     }
 
-    dataNodes["links"].push(t1);
-    dataNodes["links"].push(t2);
+      dataNodes["links"].push({
+        "source":indexLookup[source],
+        "target":indexLookup[target],
+        "value":counter_dict_level_2[key_name]
+      })
+    }
 
-  }
+
 
 counter_dict= {}
   
   for (var row in data){
 
-    var source = data[row]["fields"]["category"]
-    var target = data[row]["fields"]["element"]
+    var source = data[row]["fields"]["base"]
+    var target = data[row]["fields"]["pastry"]
     var key_name = source.concat("_", target)
 
     if (key_name in counter_dict){
@@ -201,14 +188,11 @@ counter_dict= {}
 
 
 var return_text = function(node){
-  if(category_list.includes(node.name)){return node.name;}
-  else{
-    return node.description;
-  }
-}
+  return node.description;
+};
 
 var isCategory = function(node) {
-  if (!category_list.includes(node)){
+  if (!origin_list.includes(node)){
     return node;
   } else {
     return "";
@@ -216,9 +200,9 @@ var isCategory = function(node) {
 }
 
 var return_tooltip = function(node){
-  if(category_list.includes(node.name)){
-    return tooltip_category;
-  } else {
+  if(base_list.includes(node.name)){
+    return tooltip;
+  } else if (pastries_list.includes(node.name)) {
     return tooltip;
   }
 }
@@ -227,31 +211,15 @@ var tooltip = d3.select("body")
     .append("div")
     .style("position", "absolute")
     .style("z-index", "10")
-    .style("font-family", "monospace")
+    .style("font-family", "palatino")
     .style("visibility", "hidden")
     .style("background", "black")
     .style("opacity", 1.0)
-    .style("font-size", "20px")
+    .style("font-size", "15px")
     .style("border-radius", "6px")
     .style("padding", "5px 5px")
     .style("color", "white")
     .style("width", "30%");
-
-var tooltip_category = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("font-family", "monospace")
-    .style("visibility", "hidden")
-    .style("background", "black")
-    .style("opacity", 1.0)
-    .style("font-size", "10px")
-    .style("border-radius", "6px")
-    .style("padding", "5px 5px")
-    .style("max-width","200px")
-    .style("word-wrap","break-word")
-    .style("color", "white");
-
 
   var scale = d3.scaleOrdinal(["#FFADAF", "#FFC980", "#CB91A7", "#9DACCB", "#95D1A5", 
                 "#F586C6", "#BFDD81", "#F18489", "#80BCEC", "#91CBB5"])
@@ -285,11 +253,12 @@ console.log(dataNodes.nodes)
       .attr("x", sankey.nodeWidth()+10)
       .attr("y", function(d) {return (d.y1-d.y0)/2; })
       //.attr("transform", null)
-      .text(function(d) { return isCategory(d.name);})
+      .text(function(d) { return d.name;})
       .filter(function(d) { return d.x0 < width / 2; })
       .attr("x", sankey.nodeWidth() - 25)
       .attr("text-anchor", "end");
-      console.log(dataNodes.links)
+      //console.log(dataNodes.links)
+
    link = link
     .data(dataNodes.links)
     .enter().append("path")
@@ -310,5 +279,25 @@ console.log(dataNodes.nodes)
                     .attr("stroke-opacity", 0.2);
        })
 
+      var columnNames=["Pastry Base","Dessert","Origin Country"];
+        var distance=width/(columnNames.length-1);
+        var pos=0;
+        
+        for (var i = 0; i < columnNames.length; i++){
+            svg.append("text")
+              .attr("x", pos+40)
+              .attr("y", 80)
+              .attr("font-family", "palatino")
+              .attr("font-weight", "bold")
+              .attr("font-size", "20px")
+              .text(columnNames[i]); 
+
+            pos=pos+distance;
+        }
+
 </script>
+
+<h3 style="font-family: palatino; font-weight: lighter;"> Hover over a dessert or pastry base to learn more about it. You can also hover over a connecting link to see where it goes.</h3>
+
+
 
